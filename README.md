@@ -1,133 +1,48 @@
-# Nodejs_Project
+This is a base node js project template, which anyone can use as it has been prepared, by keeping some of the most important code principles and project management recommendations. Feel free to change anything. 
 
-A minimal Express + Sequelize boilerplate with structured layers (routes, controllers, services, repositories) and Winston logging. Includes `nodemon` for development and a basic health/info endpoint.
 
-## Features
-- Express server with versioned API routing (`/api/v1`)
-- Health endpoint: `GET /api/v1/info` -> `{ success: true, message: 'API IS LIVE' }`
-- Config management via dotenv and central `ServerConfig`
-- Winston logging to console and `combined.log`
-- Sequelize + sequelize-cli scaffold with MySQL config
-- Organized project structure for scalability
+`src` -> Inside the src folder all the actual source code regarding the project will reside, this will not include any kind of tests. (You might want to make separate tests folder)
 
-## Getting Started
+Lets take a look inside the `src` folder
 
-### Prerequisites
-- Node.js 18+
-- npm 9+
-- MySQL server (for Sequelize DB usage)
+ - `config` -> In this folder anything and everything regarding any configurations or setup of a library or module will be done. For example: setting up `dotenv` so that we can use the environment variables anywhere in a cleaner fashion, this is done in the `server-config.js`. One more example can be to setup you logging library that can help you to prepare meaningful logs, so configuration for this library should also be done here. 
 
-### Installation
-```bash
-npm install
-```
+ - `routes` -> In the routes folder, we register a route and the corresponding middleware and controllers to it. 
 
-### Environment Variables
-Create a `.env` file in the project root:
-```bash
-PORT=3000
-```
+ - `middlewares` -> they are just going to intercept the incoming requests where we can write our validators, authenticators etc. 
 
-`src/config/server-config.js` loads `.env` via `dotenv`. Ensure `PORT` is set.
+ - `controllers` -> they are kind of the last middlewares as post them you call you business layer to execute the budiness logic. In controllers we just receive the incoming requests and data and then pass it to the business layer, and once business layer returns an output, we structure the API response in controllers and send the output. 
 
-### Database Configuration (Sequelize)
-Database environments are defined in `src/config/config.json` (sequelize-cli format):
-```json
-{
-  "development": {
-    "username": "root",
-    "password": null,
-    "database": "database_development",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
-  }
-}
-```
-Update credentials per environment. Typical sequelize-cli commands:
-```bash
-npx sequelize-cli db:create
-npx sequelize-cli db:migrate
-npx sequelize-cli db:seed:all
-```
+ - `repositories` -> this folder contains all the logic using which we interact the DB by writing queries, all the raw queries or ORM queries will go here.
 
-## Running the App
+ - `services` -> contains the buiness logic and interacts with repositories for data from the database
 
-### Development
-```bash
-npm run dev
-```
-Starts `nodemon` on `src/index.js`. The server listens on `process.env.PORT`.
+ - `utils` -> contains helper methods, error classes etc.
 
-### Verify
-- Open: `http://localhost:<PORT>/api/v1/info`
-- Expected response:
-```json
-{
-  "success": true,
-  "message": "API IS LIVE",
-  "error": {},
-  "data": {}
-}
-```
+### Setup the project
 
-## Project Structure
-```
-src/
-  config/
-    config.json           # Sequelize environments
-    index.js              # Re-exports ServerConfig, Logger
-    logger-config.js      # Winston logger
-    server-config.js      # Loads .env, exposes PORT
-  controllers/
-    index.js
-    info-controller.js    # GET /api/v1/info handler
-  middlewares/
-    index.js              # (placeholder)
-  migrations/             # Sequelize migrations
-  models/
-    index.js              # Sequelize models entry
-  repositories/
-    index.js              # Data access layer entry
-  routes/
-    index.js              # Mounts v1 routes at /api/v1
-    v1/
-      index.js            # /info route
-  seeders/                # Sequelize seeders
-  services/
-    index.js              # Business logic layer entry
-  utils/
-    index.js              # Helpers
-index.js                  # App entry; mounts /api and starts server
-```
+ - Download this template from github and open it in your favourite text editor. 
+ - Go inside the folder path and execute the following command:
+  ```
+  npm install
+  ```
+ - In the root directory create a `.env` file and add the following env variables
+    ```
+        PORT=<port number of your choice>
+    ```
+    ex: 
+    ```
+        PORT=3000
+    ```
+ - go inside the `src` folder and execute the following command:
+    ```
+      npx sequelize init
+    ```
+ - By executing the above command you will get migrations and seeders folder along with a config.json inside the config folder. 
+ - If you're setting up your development environment, then write the username of your db, password of your db and in dialect mention whatever db you are using for ex: mysql, mariadb etc
+ - If you're setting up test or prod environment, make sure you also replace the host with the hosted db url.
 
-## API
-
-### GET /api/v1/info
-- **Description**: Health check / info endpoint
-- **Response**: 200 OK, see Verify section
-
-## Logging
-- Logger: Winston
-- Outputs to console and `combined.log` (project root)
-- Timestamped log format configured in `src/config/logger-config.js`
-
-## Scripts
-```json
-{
-  "dev": "npx nodemon src/index.js"
-}
-```
-
-## Tech Stack
-- Express 5
-- Sequelize 6, sequelize-cli
-- MySQL2
-- Winston
-- Nodemon
-- dotenv
-
-## Contributing
-- Fork, create a branch, make changes, open a PR.
-
-## License
-ISC © Anurag
+ - To run the server execute
+ ```
+ npm run dev
+ ```
